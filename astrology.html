@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css" />
+        <title>DNOO37</title>
+    </head>
+    <body>
+        <nav>
+            <h1><a href="index.html">DAVID FERNÁNDEZ</a></h1>
+            <select onchange="location = this.value;">
+                <option value="index.html">INDEX</option>
+                <option value="astrology.html" selected>ASTROLOGY</option>
+                <option value="astronomy.html">ASTRONOMY</option>
+                <option value="earthquakes.html">EARTHQUAKES</option>
+                <option value="weather.html">WEATHER</option>
+            </select>
+        </nav>
+        <header style="display: none;">
+            <div>Marque uno:</div>
+            <div><input type="radio" name="selecciona" value="todos" checked />Todos</div>
+            <div><input type="radio" name="selecciona" value="agua" />Agua</div>
+            <div><input type="radio" name="selecciona" value="aire" />Aire</div>
+            <div><input type="radio" name="selecciona" value="fuego" />Fuego</div>
+            <div><input type="radio" name="selecciona" value="tierra" />Tierra</div>
+        </header>
+        <aside></aside>
+        <main></main>
+        <script>
+            const alternativas = document.querySelector("header");
+            const detalles = document.querySelector("aside");
+            const respuesta = document.querySelector("main");
+            var datos;
+            async function estudiantes() {
+                const data = await fetch("https://raw.githubusercontent.com/profesorfaco/dno037-2023-2/main/clase-07/_curso.json");
+                datos = await data.json();
+                alternativas.removeAttribute("style");
+                datos.forEach((x) => {
+                    if(x.github !== ""){
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.zodiaco.signo
+                        }</p></div></article>`;
+                    }
+                });
+            }
+            estudiantes().catch((error) => console.error(error));
+
+            function compatibilidad(valor) {
+                respuesta.innerHTML = ``;
+                detalles.innerHTML = ``;
+
+                //Lo que sigue lo saqué de https://www.clara.es/
+
+                if (valor == "fuego") {
+                    about =
+                        "<em>Con signo de fuego (Aries, Leo y Sagitario)</em>:  Los signos de fuego son conocidos por su energía y entusiasmo. Tienen una gran vitalidad y suelen ser impulsivos y dinámicos.son creativos y suelen tener ideas originales. Son espontáneos y les gusta tomar riesgos, lo que a menudo les lleva a explorar nuevas oportunidades y aventuras. Tienen una fuerte personalidad y suelen destacar en roles de liderazgo. Tienen habilidades naturales para motivar a otros y a menudo son carismáticos y persuasivos.";
+                } else if (valor == "agua") {
+                    about =
+                        "<em>Con signo de agua (Cáncer, Escorpio y Piscis)</em>: Los signos de agua son conocidos por ser altamente sensibles y emocionales. Son empáticos y pueden captar fácilmente las emociones de los demás, así como expresar y procesar sus propios sentimientos de manera profunda. Los signos de agua son flexibles y se adaptan fácilmente a los cambios y circunstancias. Son capaces de fluir como el agua, ajustándose a diferentes situaciones y personas.";
+                } else if (valor == "aire") {
+                    about =
+                        "<em>Con signo de aire (Géminis, Libra y Acuario)</em>: Suelen ser más desapegados, necesitan momentos para estar a solas, para separarse del resto. Suelen tener una mente creativa, no temen a dar rienda suelta a sus pensamientos y analizarse a sí mismos. Esto les permite cambiar constantemente de opinión y de parecer";
+                } else if (valor == "tierra"){
+                    about =
+                        "<em>Con signo de tierra (Tauro, Virgo, Capricornio)</em>:  Los signos de tierra son conocidos por ser prácticos y realistas. Tienen una mentalidad orientada hacia la estabilidad y la seguridad. Son excelentes para establecer metas concretas y trabajar de manera constante para alcanzarlas. Tienden a ser responsables y confiables. Son diligentes y cumplen sus compromisos. Les gusta tener el control de las situaciones y son buenos para manejar responsabilidades y tareas.";
+                } else {
+                    about = "Diseño y nuevos medios."
+                }
+
+                detalles.innerHTML += `<div><p>${about}</p></div>`;
+
+                datos.forEach((x) => {
+                    if (valor == x.zodiaco.elemento) {
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.github.split("/")[3]
+                        }</p></div></article>`;
+                    }
+                });
+            }
+
+            const seleccionado = document.querySelectorAll('input[name="selecciona"]');
+
+            seleccionado.forEach((i) => {
+                i.addEventListener("change", function () {
+                    var valor = this.value;
+                    if (valor !== "todos"){
+                        console.log(valor);
+                        compatibilidad(valor);
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
